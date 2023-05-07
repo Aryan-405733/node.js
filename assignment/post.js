@@ -1,23 +1,61 @@
 
 const express = require("express");
+const data = require('./data.js');
   
-// New app using express module
+
 const app = express();
  app.use(express.json())
+
+const checkQuery = (req, res, next) => {
+  const clg = req.query.college;
+  if (!clg) {
+    return res.json({msg: "Please provide college name."});
+  }
   
-app.post("/login", (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
+  next();
+}
+  
+// const validate = (req,res,next)=>{
+//   const name = req.body.name;
+//   const address = req.body.address;
+//   const email = req.body.email;
+//   const phonenumber = req.body.phonenumber;
+//   const DOB = req.body.DOB;
+   
+//   if (!name) {
+//     return res.send('Give proper name');
+//   }
+//    if (!phonenumber) {
+//     return res.send('Give proper phonenumber')
+//    }
+// }
 
-    if (!username || !password) {
-        return res.send('Give Proper Details');
-    }
+app.post("/registeruser",validate, (req, res) => {
+    const name = req.body.name;
+    const address = req.body.address;
+    const email = req.body.email;
+    const phonenumber = req.body.phonenumber;
+    const DOB = req.body.DOB;
 
-    return res.send('Login Success');
+    if (!name || !phonenumber ) {
+      return res.send('Give proper Details');
+  }
 
-
+ 
+    return res.json({msg:"Login Sucess", name:name, address:address,email:email,phonenumber:phonenumber,DOB:DOB});
     
 })
+
+app.get('/search', checkQuery, (req, res) => {
+  const clg = req.query.college;
+  console.log(clg);
+  const filteruser = data.filter((user)=>{
+    return user.college===clg;
+  })
+  res.json(filteruser);
+});
+
+
   
 app.listen(3000, function(){
   console.log("server is running on port 3000");
