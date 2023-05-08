@@ -15,20 +15,28 @@ const checkQuery = (req, res, next) => {
   next();
 }
   
-// const validate = (req,res,next)=>{
-//   const name = req.body.name;
-//   const address = req.body.address;
-//   const email = req.body.email;
-//   const phonenumber = req.body.phonenumber;
-//   const DOB = req.body.DOB;
-   
-//   if (!name) {
-//     return res.send('Give proper name');
-//   }
-//    if (!phonenumber) {
-//     return res.send('Give proper phonenumber')
-//    }
-// }
+const validate = (req,res,next)=>{
+  const name = req.body.name;
+  const address = req.body.address;
+  const email = req.body.email;
+  const phonenumber = req.body.phonenumber;
+  const DOB = req.body.DOB;
+
+  const phoneNumRegex = /^\d{10}$/;
+  const emailregex = /^\w+\d*@\w+\.\w{2,3}$/;
+  if (!name) { 
+    return res.send('Give proper name');
+  }
+   if (!phoneNumRegex.test(phonenumber)) {
+    return res.send('Give proper phonenumber')
+   }
+
+   if(!emailregex.test(email)){
+    return res.send('give proper email')
+   }
+
+   next();
+}
 
 app.post("/registeruser",validate, (req, res) => {
     const name = req.body.name;
@@ -37,9 +45,9 @@ app.post("/registeruser",validate, (req, res) => {
     const phonenumber = req.body.phonenumber;
     const DOB = req.body.DOB;
 
-    if (!name || !phonenumber ) {
-      return res.send('Give proper Details');
-  }
+  //   if (!name || !phonenumber ) {
+  //     return res.send('Give proper Details');
+  // }
 
  
     return res.json({msg:"Login Sucess", name:name, address:address,email:email,phonenumber:phonenumber,DOB:DOB});
