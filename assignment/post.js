@@ -22,10 +22,15 @@ const validate = (req,res,next)=>{
   const phonenumber = req.body.phonenumber;
   const DOB = req.body.DOB;
 
+  const notProvided = [...Object.keys(req.body)].filter((key) => req.body[key] === '');
+  if(notProvided.length > 0){
+    return res.json({msg: 'provide all fields', notProvided: notProvided});
+  }
+
   const phoneNumRegex = /^\d{10}$/;
   const emailregex = /^\w+\d*@\w+\.\w{2,3}$/;
   if (!name) { 
-    return res.send('Give proper name');
+    return res.send('Name filed is empty');
   }
    if (!phoneNumRegex.test(phonenumber)) {
     return res.send('Give proper phonenumber')
@@ -38,7 +43,9 @@ const validate = (req,res,next)=>{
    next();
 }
 
-app.post("/registeruser",validate, (req, res) => {
+app.use('/registeruser', validate)
+
+app.post("/registeruser", (req, res) => {
     const name = req.body.name;
     const address = req.body.address;
     const email = req.body.email;
